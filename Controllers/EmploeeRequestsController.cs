@@ -12,27 +12,16 @@ using TestAccountingInformation.Models;
 namespace TestAccountingInformation.Controllers
 {
     [Authorize(Roles = "Сотрудник")]
-    public class EmploeeRequestsController : Controller
+    public class EmploeeRequestsController : BaseRequestController
     {
-        private readonly ApplicationDataBase _context;
-        private readonly UserManager<UserEntity> _userManager;
-
         public EmploeeRequestsController(ApplicationDataBase context, UserManager<UserEntity> userManager)
-        {
-            _context = context;
-            _userManager = userManager;
-        }
+        : base(context, userManager) { }
 
         public async Task<IActionResult> MyRequests()
         {
             var currentUser = await _userManager.GetUserAsync(User);
-            var requests = await _context.Requests
-                .Include(r => r.Status)
-                .Include(r => r.Executor)
-                .Where(r => r.AuthorId == currentUser.Id)
-                .OrderByDescending(r => r.Id)
-                .ToListAsync();
-
+            var requests = await LoadRequestsWithBasicIncludesAsync(r => r.AuthorId == currentUser.Id);
+            
             return View(requests);
         }
 
@@ -107,14 +96,7 @@ namespace TestAccountingInformation.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var currentUser = await _userManager.GetUserAsync(User);
-            var request = await _context.Requests
-                .Include(r => r.Author)
-                .Include(r => r.Executor)
-                .Include(r => r.Status)
-                .Include(r => r.RequestInformations)
-                    .ThenInclude(ri => ri.Information)
-                .FirstOrDefaultAsync(r => r.Id == id && r.AuthorId == currentUser.Id);
-
+            var request = await LoadRequestWithDetailsAsync(id);
 
             if (request == null)
                 return NotFound();

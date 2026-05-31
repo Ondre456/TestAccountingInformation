@@ -11,37 +11,21 @@ using TestAccountingInformation.DataBase.Entityes;
 namespace TestAccountingInformation.Controllers
 {
     [Authorize(Roles = "Бухгалтер")]
-    public class AccountantController : Controller
+    public class AccountantController : BaseRequestController
     {
-        private readonly ApplicationDataBase _context;
-        private readonly UserManager<UserEntity> _userManager;
-
         public AccountantController(ApplicationDataBase context, UserManager<UserEntity> userManager)
-        {
-            _context = context;
-            _userManager = userManager;
-        }
+        : base(context, userManager) { }
 
         public IActionResult Index()
         {
-            var requests = _context.Requests
-                .Include(r => r.Author)
-                .Include(r => r.Executor)
-                .Include(r => r.Status)
-                .ToList();
-
+            var requests = LoadRequestsWithBasicIncludesAsync(_ => true).Result;
+            
             return View(requests);
         }
 
         public async Task<IActionResult> Details(int id)
         {
-            var request = await _context.Requests
-                .Include(r => r.Author)
-                .Include(r => r.Executor)
-                .Include(r => r.Status)
-                .Include(r => r.RequestInformations)
-                    .ThenInclude(ri => ri.Information)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var request = await LoadRequestWithDetailsAsync(id);
 
             if (request == null)
             {
@@ -50,12 +34,11 @@ namespace TestAccountingInformation.Controllers
 
             ViewBag.CanTake = request.StatusId == (int)RequestStatus.Sent;
             ViewBag.CanComplete = request.StatusId == (int)RequestStatus.InProgress &&
-                           request.ExecutorId == User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
+                       request.ExecutorId == User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             ViewBag.CanReject = (request.StatusId == (int)RequestStatus.Sent ||
                                request.StatusId == (int)RequestStatus.InProgress) &&
                                (request.ExecutorId == null ||
-                                request.ExecutorId == User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                        request.ExecutorId == User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
             return View(request);
         }
