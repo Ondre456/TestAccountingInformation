@@ -1,4 +1,6 @@
-﻿namespace TestAccountingInformation.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace TestAccountingInformation.Models
 {
     public class RequestItemViewModel
     {
@@ -10,6 +12,9 @@
 
     public class RequestViewModel
     {
+        [Required(ErrorMessage = "Комментарий обязателен для заполнения")]
+        [StringLength(4000, ErrorMessage = "Комментарий не может превышать 4000 символов")]
+        public string ReasonComment { get; set; }
         public List<RequestItemViewModel> Items { get; set; } = new();
     }
 }

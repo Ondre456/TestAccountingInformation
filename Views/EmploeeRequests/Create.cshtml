@@ -7,6 +7,15 @@
 <h2>Создание запроса</h2>
 
 <form asp-action="Create" method="post">
+    <div class="form-group mb-3">
+        <label asp-for="ReasonComment" class="control-label">Комментарий к запросу</label>
+        <textarea asp-for="ReasonComment"
+                  class="form-control"
+                  rows="4"
+                  placeholder="В комментарии укажите причину запроса"></textarea>
+        <span asp-validation-for="ReasonComment" class="text-danger"></span>
+    </div>
+
     <table class="table table-bordered">
         <thead>
             <tr>

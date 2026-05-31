@@ -30,5 +30,11 @@ public class RequestConfiguration : IEntityTypeConfiguration<RequestEntity>
             .HasColumnType("datetime")
             .IsRequired()
             .HasDefaultValueSql("DATETIME('now')");
+
+        builder.Property(r => r.ReasonComment)
+            .HasColumnName("ReasonComment")
+            .HasMaxLength(4000)
+            .IsUnicode(true)
+            .IsRequired();
     }
 }

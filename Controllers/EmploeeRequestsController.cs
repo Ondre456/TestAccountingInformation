@@ -65,7 +65,8 @@ namespace TestAccountingInformation.Controllers
                 {
                     AuthorId = currentUser.Id,
                     Author = currentUser,
-                    StatusId = (int)RequestStatus.Sent
+                    StatusId = (int)RequestStatus.Sent,
+                    ReasonComment = model.ReasonComment
                 };
 
                 _context.Requests.Add(request);
@@ -113,6 +114,7 @@ namespace TestAccountingInformation.Controllers
                 .Include(r => r.RequestInformations)
                     .ThenInclude(ri => ri.Information)
                 .FirstOrDefaultAsync(r => r.Id == id && r.AuthorId == currentUser.Id);
+
 
             if (request == null)
                 return NotFound();

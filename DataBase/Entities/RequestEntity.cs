@@ -9,6 +9,7 @@ namespace TestAccountingInformation.DataBase.Entities
         public UserEntity Author { get; set; }
         public string? ExecutorId { get; set; }
         public UserEntity? Executor { get; set; }
+        public string ReasonComment {  get; set; }
         public virtual ICollection<RequestInformation> RequestInformations { get; set; } = new List<RequestInformation>();
         public int StatusId { get; set; }
         public RequestStatusEntity Status { get; set; }
