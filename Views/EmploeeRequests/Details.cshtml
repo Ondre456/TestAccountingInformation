@@ -1,0 +1,24 @@
+﻿@model TestAccountingInformation.DataBase.Entities.RequestEntity
+
+@{
+    ViewData["Title"] = "Детали запроса";
+}
+
+<h2>Запрос № @Model.Id</h2>
+
+<div class="card">
+    <div class="card-body">
+        <p><strong>Статус:</strong> @Model.Status.Status</p>
+        <p><strong>Дата создания:</strong> @Model.CreatedAt</p>
+
+        <h4>Список документов:</h4>
+        <ul>
+            @foreach (var reqInfo in Model.RequestInformations)
+            {
+                <li>@reqInfo.Information.Type (Кол-во: @reqInfo.Quantity)</li>
+            }
+        </ul>
+    </div>
+</div>
+
+<a asp-action="MyRequests" class="btn btn-primary mt-3">Назад к списку</a>

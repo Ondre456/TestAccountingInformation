@@ -1,0 +1,40 @@
+﻿@model TestAccountingInformation.Models.RequestViewModel
+
+@{
+    ViewData["Title"] = "Новый запрос";
+}
+
+<h2>Создание запроса</h2>
+
+<form asp-action="Create" method="post">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th style="width: 50px;">Выбор</th>
+                <th>Тип справки</th>
+                <th style="width: 150px;">Количество</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Items.Count; i++)
+            {
+                <tr>
+                    <td class="text-center">
+                        <input type="checkbox" asp-for="Items[i].IsSelected" class="form-check-input" />
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => m.Items[i].InformationType)
+                        <input type="hidden" asp-for="Items[i].InformationId" />
+                        <input type="hidden" asp-for="Items[i].InformationType" />
+                    </td>
+                    <td>
+                        <input type="number" asp-for="Items[i].Quantity" min="1" class="form-control" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-success">Отправить запрос</button>
+    <a asp-action="MyRequests" class="btn btn-secondary">Отмена</a>
+</form>
