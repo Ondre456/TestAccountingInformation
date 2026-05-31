@@ -16,6 +16,7 @@
             <th>ID</th>
             <th>Дата создания</th>
             <th>Статус</th>
+            <th>Исполнитель</th>
             <th>Действия</th>
         </tr>
     </thead>
@@ -26,6 +27,18 @@
                 <td>@item.Id</td>
                 <td>@item.CreatedAt.ToShortDateString()</td>
                 <td>@item.Status.Status</td>
+
+                <td>
+                    @if (item.Executor != null)
+                    {
+                        @(item.Executor.FirstName + " " + item.Executor.LastName)
+                    }
+                    else
+                    {
+                        <span class="text-muted fst-italic">Пока не взято в работу</span>
+                    }
+                </td>
+
                 <td>
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Просмотр</a>
                 </td>

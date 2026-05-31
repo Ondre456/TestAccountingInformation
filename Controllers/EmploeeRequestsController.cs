@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
+using TestAccountingInformation.Constants;
 using TestAccountingInformation.DataBase;
 using TestAccountingInformation.DataBase.Entities;
 using TestAccountingInformation.DataBase.Entityes;
@@ -27,6 +28,7 @@ namespace TestAccountingInformation.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
             var requests = await _context.Requests
                 .Include(r => r.Status)
+                .Include(r => r.Executor)
                 .Where(r => r.AuthorId == currentUser.Id)
                 .OrderByDescending(r => r.Id)
                 .ToListAsync();
@@ -37,6 +39,7 @@ namespace TestAccountingInformation.Controllers
         public IActionResult Create()
         {
             var infoTypes = _context.Informations.ToList();
+            
             var model = new RequestViewModel
             {
                 Items = infoTypes.Select(i => new RequestItemViewModel
@@ -47,6 +50,7 @@ namespace TestAccountingInformation.Controllers
                     IsSelected = false
                 }).ToList()
             };
+
             return View(model);
         }
 
@@ -61,7 +65,7 @@ namespace TestAccountingInformation.Controllers
                 {
                     AuthorId = currentUser.Id,
                     Author = currentUser,
-                    StatusId = 1
+                    StatusId = (int)RequestStatus.Sent
                 };
 
                 _context.Requests.Add(request);
@@ -90,10 +94,12 @@ namespace TestAccountingInformation.Controllers
                 }
 
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(MyRequests));
             }
 
             ViewBag.InformationTypes = _context.Informations.ToList();
+            
             return View(model);
         }
 
@@ -102,6 +108,7 @@ namespace TestAccountingInformation.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
             var request = await _context.Requests
                 .Include(r => r.Author)
+                .Include(r => r.Executor)
                 .Include(r => r.Status)
                 .Include(r => r.RequestInformations)
                     .ThenInclude(ri => ri.Information)

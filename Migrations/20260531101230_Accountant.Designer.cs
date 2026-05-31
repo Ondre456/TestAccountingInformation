@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TestAccountingInformation.DataBase;
 
@@ -10,9 +11,11 @@ using TestAccountingInformation.DataBase;
 namespace TestAccountingInformation.Migrations
 {
     [DbContext(typeof(ApplicationDataBase))]
-    partial class ApplicationDataBaseModelSnapshot : ModelSnapshot
+    [Migration("20260531101230_Accountant")]
+    partial class Accountant
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.5");

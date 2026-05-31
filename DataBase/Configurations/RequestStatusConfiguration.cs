@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using TestAccountingInformation.Constants;
 using TestAccountingInformation.DataBase.Entities;
 
 namespace TestAccountingInformation.DataBase.Configurations
@@ -18,10 +19,10 @@ namespace TestAccountingInformation.DataBase.Configurations
                 .IsRequired();
 
             builder.HasData(
-                new RequestStatusEntity { Id = 1, Status = "Отправлен" },
-                new RequestStatusEntity { Id = 2, Status = "В работе" },
-                new RequestStatusEntity { Id = 3, Status = "Выполнен" },
-                new RequestStatusEntity { Id = 4, Status = "Отклонен" }
+                new RequestStatusEntity { Id = (int)RequestStatus.Sent, Status = "Отправлен" },
+                new RequestStatusEntity { Id = (int)RequestStatus.InProgress, Status = "В работе" },
+                new RequestStatusEntity { Id = (int)RequestStatus.Completed, Status = "Выполнен" },
+                new RequestStatusEntity { Id = (int)RequestStatus.Rejected, Status = "Отклонен" }
             );
         }
     }

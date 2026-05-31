@@ -1,0 +1,64 @@
+﻿@model TestAccountingInformation.DataBase.Entities.RequestEntity
+
+<h2>Детали запроса #@Model.Id</h2>
+
+<div>
+    <p><strong>Автор:</strong> @Model.Author?.FirstName @Model.Author?.LastName</p>
+    <p><strong>Статус:</strong> @Model.Status.Status</p>
+    @if (Model.Executor != null)
+    {
+        <p><strong>Исполнитель:</strong> @Model.Executor.FirstName @Model.Executor.LastName</p>
+    }
+    <p><strong>Создан:</strong> @Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</p>
+</div>
+
+<h3>Информация по запросу</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Тип справки</th>
+            <th>Количество</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var info in Model.RequestInformations)
+        {
+            <tr>
+                <td>@info.Information.Type</td>
+                <td>@info.Quantity</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="actions">
+    @if (ViewBag.CanTake)
+    {
+        <form method="post" action="@Url.Action("TakeInWork", "Accountant")">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.Id" />
+            <button type="submit" class="btn btn-warning">Взять в работу</button>
+        </form>
+    }
+
+    @if (ViewBag.CanComplete)
+    {
+        <form method="post" action="@Url.Action("MarkAsCompleted", "Accountant")">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.Id" />
+            <button type="submit" class="btn btn-success">Пометить как выполненный</button>
+        </form>
+    }
+
+    @if (ViewBag.CanReject)
+    {
+        <form method="post" action="@Url.Action("Reject", "Accountant")">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.Id" />
+            <button type="submit" class="btn btn-danger">Отклонить</button>
+        </form>
+    }
+
+</div>
+
+<a href="@Url.Action("Index")" class="btn btn-secondary">Назад к списку</a>
